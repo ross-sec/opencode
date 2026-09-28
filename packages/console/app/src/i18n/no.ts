@@ -3,6 +3,8 @@ import { dict as en } from "./en"
 
 export const dict = {
   ...en,
+  "go.promo.spaceBunny": "Space Bunny Free, en ny anonym modell, er tilgjengelig i en begrenset periode",
+  "go.graph.bonus": "{{count}}× bruk",
   "nav.github": "GitHub",
   "nav.docs": "Dokumentasjon",
   "nav.changelog": "Endringslogg",
@@ -58,6 +60,7 @@ export const dict = {
   "common.cancel": "Avbryt",
   "common.creating": "Oppretter...",
   "common.create": "Opprett",
+  "common.contactUs": "Kontakt oss",
 
   "common.videoUnsupported": "Nettleseren din støtter ikke video-taggen.",
   "common.figure": "Fig {{n}}.",
@@ -226,6 +229,9 @@ export const dict = {
   "zen.faq.q8": "Kan jeg bruke Zen med andre kodeagenter?",
   "zen.faq.a8":
     "Selv om Zen fungerer veldig bra med OpenCode, kan du bruke Zen med hvilken som helst agent. Følg oppsettinstruksjonene i din foretrukne kodeagent.",
+  "zen.faq.q9": "Kan jeg få refusjon?",
+  "zen.faq.a9":
+    "Du kan ha rett på refusjon hvis belastningen ble gjort i løpet av de siste 14 dagene og du ikke har brukt noe av kreditten fra kjøpet. {{contact}} for å be om refusjon.",
 
   "zen.cta.start": "Kom i gang med Zen",
   "zen.pricing.title": "Legg til $20 Pay as you go-saldo",
@@ -254,7 +260,6 @@ export const dict = {
   "zen.privacy.exceptionsLink": "følgende unntak",
 
   "go.title": "OpenCode Go | Rimelige kodemodeller for alle",
-  "go.banner.text": "GLM-5.3-Flash får 2x bruksgrense i en begrenset periode",
   "go.meta.description":
     "Go koster $10/måned, med sjenerøse bruksgrenser og pålitelig tilgang til ledende kodemodeller.",
   "go.hero.title": "Rimelige kodemodeller for alle",
@@ -265,11 +270,31 @@ export const dict = {
   "go.cta.template": "{{text}} {{price}}",
   "go.cta.text": "Abonner på Go",
   "go.cta.price": "$10/måned",
+  "go.plans.month": "/måned",
+  "go.plans.plus.cta": "Abonner på Go Plus",
+  "go.plans.plus.description": "Go Plus koster $40/måned og gir høyere bruksgrenser.",
+  "go.plans.go.feature1": "Utvalgte, rimelige modeller",
+  "go.plans.go.feature2": "Testet for agentbasert koding",
+  "go.plans.go.feature3": "Romslige grenser og pålitelig tilgang",
+  "go.plans.plus.feature1": "Alt i Go er inkludert",
+  "go.plans.plus.feature2": "Høyere grenser for lengre, fokuserte kodeøkter",
+  "go.plans.plus.feature3": "For større, krevende prosjekter",
+  "go.plans.limits": "Grenser",
+  "go.plans.description": "Anslåtte forespørsler per 5 timer og månedlige grenser per modell",
+  "go.plans.legend": "Abonnementer",
   "go.pricing.body": "Bruk med hvilken som helst agent. $10/måned. Fyll på kreditt ved behov. Avslutt når som helst.",
   "go.graph.free": "Gratis",
   "go.graph.freePill": "Big Pickle og gratis modeller",
   "go.graph.go": "Go",
   "go.graph.label": "Forespørsler per 5 timer",
+  "go.graph.period": "Bruk",
+  "go.graph.model": "Modell",
+  "go.graph.requests": "Estimerte forespørsler / 5 timer",
+  "go.graph.allowance": "Månedlig bruk",
+  "go.graph.new": "Ny",
+  "go.graph.scale": "Ikke-lineær skala for forespørsler",
+  "go.graph.showAll": "Vis alle {{count}} modeller",
+  "go.graph.showLess": "Vis færre modeller",
   "go.graph.limitedRegions": "begrensede regioner",
   "go.graph.limitedTime": "begrenset periode",
   "go.graph.usageLimits": "Bruksgrenser",
@@ -352,7 +377,7 @@ export const dict = {
     "Logger for overvåking av misbruk genereres for all bruk av API-funksjoner og oppbevares i opptil 30 dager.",
   "go.faq.a5.learnMore": "Les mer",
   "go.faq.a5.deepseekRetention":
-    "ZDR-avtalen fornyes månedlig. Den gjeldende avtalen er gyldig til og med 31. august 2026.",
+    "ZDR-avtalen fornyes månedlig. Den gjeldende avtalen er gyldig til og med 30. september 2026.",
   "go.faq.a5.museRetention":
     "Kraftig rabatterte tokenpriser i bytte mot tillatelse til å bruke ledetekstene og fullføringene dine til å trene fremtidige Meta-modeller.",
 
@@ -369,7 +394,10 @@ export const dict = {
 
   "go.faq.q9": "Hva er forskjellen mellom gratis modeller og Go?",
   "go.faq.a9":
-    "Gratis modeller inkluderer Big Pickle pluss kampanjemodeller som er tilgjengelige på det tidspunktet, med en kvote på 200 forespørsler/dag. Go tilbyr et kuratert modellutvalg med høyere forespørselskvoter som håndheves over rullerende vinduer (5 timer, ukentlig og månedlig), omtrent tilsvarende $12 per 5 timer, $30 per uke og $60 per måned (faktiske forespørselsantall varierer etter modell og bruk).",
+    "Gratis modeller inkluderer Big Pickle pluss kampanjemodeller som er tilgjengelige på det tidspunktet, med en kvote på 200 forespørsler/dag. Go tilbyr et kuratert modellutvalg med høyere forespørselskvoter i rullerende perioder: 20 % av den månedlige kvoten per 5 timer, 50 % per uke og 100 % per måned. Modellspesifikke kvoter kan variere (faktisk antall forespørsler varierer etter modell og bruk).",
+  "go.faq.q10": "Kan jeg få refusjon?",
+  "go.faq.a10":
+    "Du kan ha rett på refusjon hvis belastningen ble gjort i løpet av de siste 14 dagene og du ikke har brukt noe av Go-kvoten i den faktureringsperioden. {{contact}} for å be om refusjon.",
 
   "zen.api.error.rateLimitExceeded": "Rate limit overskredet. Vennligst prøv igjen senere.",
   "zen.api.error.modelNotSupported": "Modell {{model}} støttes ikke",

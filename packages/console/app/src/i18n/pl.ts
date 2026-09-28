@@ -2,6 +2,8 @@ import { dict as en } from "./en"
 
 export const dict = {
   ...en,
+  "go.promo.spaceBunny": "Space Bunny Free, nowy anonimowy model, jest dostępny przez ograniczony czas",
+  "go.graph.bonus": "{{count}}× większy limit",
   "nav.github": "GitHub",
   "nav.docs": "Dokumentacja",
   "nav.changelog": "Dziennik zmian",
@@ -57,6 +59,7 @@ export const dict = {
   "common.cancel": "Anuluj",
   "common.creating": "Tworzenie...",
   "common.create": "Utwórz",
+  "common.contactUs": "Skontaktuj się z nami",
 
   "common.videoUnsupported": "Twoja przeglądarka nie obsługuje znacznika wideo.",
   "common.figure": "Rys. {{n}}.",
@@ -227,6 +230,9 @@ export const dict = {
   "zen.faq.q8": "Czy mogę używać Zen z innymi agentami kodującymi?",
   "zen.faq.a8":
     "Chociaż Zen świetnie działa z OpenCode, możesz używać Zen z dowolnym agentem. Postępuj zgodnie z instrukcjami konfiguracji w swoim preferowanym agencie.",
+  "zen.faq.q9": "Czy mogę otrzymać zwrot pieniędzy?",
+  "zen.faq.a9":
+    "Możesz kwalifikować się do zwrotu, jeśli opłata została pobrana w ciągu ostatnich 14 dni i nie wykorzystano żadnych środków z tego zakupu. {{contact}}, aby poprosić o zwrot.",
 
   "zen.cta.start": "Zacznij korzystać z Zen",
   "zen.pricing.title": "Dodaj 20$ salda Pay as you go",
@@ -255,7 +261,6 @@ export const dict = {
   "zen.privacy.exceptionsLink": "następującymi wyjątkami",
 
   "go.title": "OpenCode Go | Niskokosztowe modele do kodowania dla każdego",
-  "go.banner.text": "GLM-5.3-Flash oferuje 2x wyższe limity użycia przez ograniczony czas",
   "go.meta.description":
     "Go kosztuje $10/miesiąc, oferując hojne limity użycia i niezawodny dostęp do wiodących modeli do kodowania.",
   "go.hero.title": "Niskokosztowe modele do kodowania dla każdego",
@@ -266,12 +271,32 @@ export const dict = {
   "go.cta.template": "{{text}} {{price}}",
   "go.cta.text": "Zasubskrybuj Go",
   "go.cta.price": "$10/miesiąc",
+  "go.plans.month": "/miesiąc",
+  "go.plans.plus.cta": "Subskrybuj Go Plus",
+  "go.plans.plus.description": "Go Plus kosztuje $40/miesiąc i oferuje wyższe limity.",
+  "go.plans.go.feature1": "Wyselekcjonowane, przystępne modele",
+  "go.plans.go.feature2": "Przetestowane do kodowania agentowego",
+  "go.plans.go.feature3": "Hojne limity i niezawodny dostęp",
+  "go.plans.plus.feature1": "Wszystko, co obejmuje Go",
+  "go.plans.plus.feature2": "Wyższe limity na dłuższe sesje kodowania w skupieniu",
+  "go.plans.plus.feature3": "Do większych, wymagających projektów",
+  "go.plans.limits": "Limity",
+  "go.plans.description": "Szacowana liczba żądań na 5 godzin i miesięczne limity dla modeli",
+  "go.plans.legend": "Plany",
   "go.pricing.body":
     "Używaj z dowolnym agentem. $10/miesiąc. Doładuj konto w razie potrzeby. Anuluj w dowolnym momencie.",
   "go.graph.free": "Darmowe",
   "go.graph.freePill": "Big Pickle i darmowe modele",
   "go.graph.go": "Go",
   "go.graph.label": "Żądania na 5 godzin",
+  "go.graph.period": "Użycie",
+  "go.graph.model": "Model",
+  "go.graph.requests": "Szac. żądania / 5 godz.",
+  "go.graph.allowance": "Miesięczne użycie",
+  "go.graph.new": "Nowość",
+  "go.graph.scale": "Nieliniowa skala liczby żądań",
+  "go.graph.showAll": "Pokaż wszystkie modele ({{count}})",
+  "go.graph.showLess": "Pokaż mniej modeli",
   "go.graph.limitedRegions": "ograniczone regiony",
   "go.graph.limitedTime": "ograniczony czas",
   "go.graph.usageLimits": "Limity użycia",
@@ -353,7 +378,7 @@ export const dict = {
   "go.faq.a5.gptRetention":
     "Dzienniki monitorowania nadużyć są generowane dla każdego użycia funkcji API i przechowywane przez maksymalnie 30 dni.",
   "go.faq.a5.learnMore": "Dowiedz się więcej",
-  "go.faq.a5.deepseekRetention": "Umowa ZDR jest odnawiana co miesiąc. Obecna umowa obowiązuje do 31 sierpnia 2026 r.",
+  "go.faq.a5.deepseekRetention": "Umowa ZDR jest odnawiana co miesiąc. Obecna umowa obowiązuje do 30 września 2026 r.",
   "go.faq.a5.museRetention":
     "Znacznie obniżone ceny tokenów w zamian za zgodę na wykorzystanie Twoich promptów i odpowiedzi do trenowania przyszłych modeli Meta.",
 
@@ -370,7 +395,10 @@ export const dict = {
 
   "go.faq.q9": "Jaka jest różnica między darmowymi modelami a Go?",
   "go.faq.a9":
-    "Darmowe modele obejmują Big Pickle oraz modele promocyjne dostępne w danym momencie, z limitem 200 zapytań/dzień. Go oferuje starannie dobrany zestaw modeli z wyższymi limitami zapytań egzekwowanymi w oknach kroczących (5-godzinnych, tygodniowych i miesięcznych), odpowiadającymi w przybliżeniu $12 na 5 godzin, $30 tygodniowo i $60 miesięcznie (rzeczywista liczba zapytań zależy od modelu i użycia).",
+    "Darmowe modele obejmują Big Pickle oraz modele promocyjne dostępne w danym momencie, z limitem 200 zapytań/dzień. Go oferuje starannie dobrany zestaw modeli z wyższymi limitami zapytań w oknach kroczących: 20% miesięcznego limitu na 5 godzin, 50% na tydzień i 100% na miesiąc. Limity mogą się różnić zależnie od modelu (rzeczywista liczba zapytań zależy od modelu i użycia).",
+  "go.faq.q10": "Czy mogę otrzymać zwrot pieniędzy?",
+  "go.faq.a10":
+    "Możesz kwalifikować się do zwrotu, jeśli opłata została pobrana w ciągu ostatnich 14 dni i nie wykorzystano żadnej części limitu Go w tym okresie rozliczeniowym. {{contact}}, aby poprosić o zwrot.",
 
   "zen.api.error.rateLimitExceeded": "Przekroczono limit zapytań. Spróbuj ponownie później.",
   "zen.api.error.modelNotSupported": "Model {{model}} nie jest obsługiwany",

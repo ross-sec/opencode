@@ -1,7 +1,7 @@
 import "./index.css"
 import { createAsync, query } from "@solidjs/router"
 import { Title, Meta } from "@solidjs/meta"
-import { For, createMemo, createSignal, onCleanup, onMount } from "solid-js"
+import { For } from "solid-js"
 //import { HttpHeader } from "@solidjs/start"
 import goLogoLight from "../../asset/go-ornate-light.svg"
 import goLogoDark from "../../asset/go-ornate-dark.svg"
@@ -10,12 +10,14 @@ import { Faq } from "~/component/faq"
 import { Legal } from "~/component/legal"
 import { Footer } from "~/component/footer"
 import { Header } from "~/component/header"
+import { GoPlanChart } from "~/component/go-plan-chart"
 import { config } from "~/config"
 import { getLastSeenWorkspaceID } from "../workspace/common"
 import { IconMiniMax, IconMiMo, IconZai, IconAlibaba, IconDeepSeek } from "~/component/icon"
 import { useI18n } from "~/context/i18n"
 import { useLanguage } from "~/context/language"
 import { LocaleLinks } from "~/component/locale-links"
+import { goUsageLimits } from "~/lib/language"
 
 const checkLoggedIn = query(async () => {
   "use server"
@@ -23,248 +25,62 @@ const checkLoggedIn = query(async () => {
 }, "checkLoggedIn.get")
 
 const models = [
+  { name: "Space Bunny Free", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
+  { name: "LongCat 2.5 Preview Free", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
+  { name: "Grok 4.7", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention30" },
   { name: "Grok 4.6", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention30" },
+  { name: "GPT 6 Luna", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention30" },
   { name: "GPT 5.6 Luna", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention30" },
   { name: "GLM-5.3-Flash", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "GLM-5.3", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "GLM-5.2", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
-  { name: "GLM-5.1", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Kimi K3", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Kimi K2.7 Code", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
-  { name: "Kimi K2.6", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "LongCat-2.0", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
+  { name: "MiMo-V2.6-Pro", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
+  { name: "MiMo-V2.6-Flash", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "MiMo-V2.5-Pro", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "MiMo-V2.5", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Qwen3.8 Max", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Qwen3.8 Flash", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
-  { name: "Qwen3.7 Max", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Qwen3.7 Plus", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
-  { name: "Qwen3.6 Plus", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "MiniMax M3", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "MiniMax M2.7", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
+  { name: "Muse Spark 1.3 Contributor", training: "go.faq.a5.used", retention: "go.faq.a5.notZdr" },
   { name: "Muse Spark 1.2 Contributor", training: "go.faq.a5.used", retention: "go.faq.a5.notZdr" },
+  { name: "DeepSeek V4.1 Flash", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "DeepSeek V4 Pro", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "DeepSeek V4 Flash", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
+  { name: "DeepSeek V4 Flash Vision Exp", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Hy4 preview", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
   { name: "Hy3", training: "go.faq.a5.notUsed", retention: "go.faq.a5.retention0" },
 ] as const
 
-function LimitsGraph(props: { href: string }) {
-  let root!: HTMLElement
-  const [visible, setVisible] = createSignal(false)
-
-  const i18n = useI18n()
-
-  onMount(() => {
-    if (typeof IntersectionObserver === "undefined") return setVisible(true)
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const entry = entries[0]
-        if (!entry?.isIntersecting) return
-        setVisible(true)
-        observer.disconnect()
-      },
-      { threshold: 0.35 },
-    )
-    observer.observe(root)
-    onCleanup(() => observer.disconnect())
-  })
-
-  const baseline = 100
-  const graph = [
-    { id: "kimi-k3", name: "Kimi K3", req: 110, d: "50ms" },
-    { id: "grok-4.6", name: "Grok 4.6", req: 169, d: "75ms" },
-    { id: "hy4-preview", name: "Hy4 preview", req: 1350, d: "90ms" },
-    { id: "gpt-5.6-luna", name: "GPT 5.6 Luna", req: 2050, d: "290ms" },
-    { id: "glm-5.3-flash", name: "GLM-5.3-Flash", req: 3160, baseReq: 1580, bonus: "2x usage", d: "100ms" },
-    { id: "minimax-m3", name: "MiniMax M3", req: 3200, d: "210ms" },
-    { id: "qwen3.7-plus", name: "Qwen3.7 Plus", req: 4300, d: "300ms" },
-    { id: "qwen3.8-flash", name: "Qwen3.8 Flash", req: 5400, d: "315ms" },
-    { id: "deepseek-v4-flash", name: "DeepSeek V4 Flash", req: 7600, d: "330ms" },
-    { id: "longcat-2.0", name: "LongCat-2.0", req: 11400, d: "335ms" },
-    { id: "mimo-v2.5", name: "MiMo-V2.5", req: 30100, d: "340ms" },
-    { id: "hy3", name: "Hy3", req: 34400, baseReq: 4300, bonus: "8x usage", d: "320ms" },
-    { id: "muse-spark-1.2-contributor", name: "Muse Spark 1.2 Contributor", req: 45300, edge: true, d: "360ms" },
-  ]
-
-  const w = 1040
-  const chartW = 720
-  const left = 40
-  const right = 60
-  const top = 18
-  const bottom = 44
-  const plot = chartW - left - right
-  const infiniteX = w - 180
-
-  const ratio = (n: number) => n / baseline
-  const rmax = Math.max(1, ...graph.filter((m) => !("infinite" in m)).map((m) => ratio(m.req)))
-  const log = (n: number) => Math.log10(Math.max(n, 1))
-  const base = 24
-  const p = 2.2
-  const x = (r: number) => left + base + Math.pow(log(r) / log(rmax), p) * (plot - base)
-  const ticks = [1, 5, 10, 25, 50, 100, 250].filter((t) => t <= rmax)
-  const labels = (() => {
-    const set = new Set<number>()
-    let last = -Infinity
-    for (const t of ticks) {
-      if (t === 1) {
-        set.add(t)
-        last = x(t)
-        continue
-      }
-      const pos = x(t)
-      if (pos - last < 44) continue
-      set.add(t)
-      last = pos
-    }
-    return set
-  })()
-  const shown = ticks.filter((t) => labels.has(t))
-  const bh = 8
-  const gap = 20
-  const step = bh + gap
-  const gy = (i: number) => top + 22 + step * i
-  const h = gy(graph.length - 1) + bottom
-  const my = graph.length < 2 ? gy(0) : (gy(0) + gy(graph.length - 1)) / 2
-  const px = (n: number) => `${(n / w) * 100}%`
-  const py = (n: number) => `${(n / h) * 100}%`
-  const lx = px(left - 16)
-  const ty = py(h - 18)
-
-  return (
-    <figure
-      data-component="limit-graph"
-      aria-label={i18n.t("go.graph.label")}
-      data-visible={visible() ? "" : undefined}
-      ref={root}
-    >
-      <div data-slot="plot">
-        <svg
-          viewBox={`0 0 ${w} ${h}`}
-          preserveAspectRatio="none"
-          role="img"
-          aria-hidden="true"
-          style={{ height: `${h}px` }}
-        >
-          <g data-slot="grid">
-            <For each={ticks}>{(t) => <line x1={x(t)} y1={top} x2={x(t)} y2={h - bottom} data-grid />}</For>
-          </g>
-
-          <line x1={left} y1={top} x2={left} y2={h - bottom} data-stub />
-
-          <g data-slot="bars">
-            <For each={graph}>
-              {(m, i) => (
-                <g data-model={m.id} style={{ "--d": m.d } as any}>
-                  <rect
-                    x={left}
-                    y={gy(i()) - bh / 2}
-                    width={Math.max(0, ("infinite" in m ? infiniteX : x(ratio(m.baseReq ?? m.req))) - left)}
-                    height={bh}
-                    data-bar
-                    data-kind={"infinite" in m ? "infinite" : "go"}
-                    data-model={m.id}
-                  />
-                  {m.baseReq && (
-                    <rect
-                      x={x(ratio(m.baseReq)) + 2}
-                      y={gy(i()) - bh / 2}
-                      width={Math.max(0, x(ratio(m.req)) - x(ratio(m.baseReq)) - 2)}
-                      height={bh}
-                      data-bar
-                      data-kind="promo"
-                      data-model={m.id}
-                    />
-                  )}
-                </g>
-              )}
-            </For>
-          </g>
-        </svg>
-
-        <div data-slot="ylabels" aria-hidden="true">
-          <span data-ylabel style={{ "--x": lx, "--y": py(my) } as any}>
-            {i18n.t("go.graph.go")}
-          </span>
-        </div>
-
-        <div data-slot="xlabels" aria-hidden="true">
-          <For each={shown}>
-            {(t) => (
-              <span data-xlabel data-tick={t} style={{ "--x": px(x(t)), "--y": ty } as any}>
-                {i18n.t("go.graph.tick", { n: t })}
-              </span>
-            )}
-          </For>
-        </div>
-
-        <div data-slot="pills">
-          <For each={graph}>
-            {(m, i) => (
-              <span
-                data-item
-                data-kind="go"
-                data-model={m.id}
-                data-edge={"edge" in m ? "" : undefined}
-                data-infinite={"infinite" in m ? "" : undefined}
-                style={
-                  { "--x": px("infinite" in m ? infiniteX : x(ratio(m.req))), "--y": py(gy(i())), "--d": m.d } as any
-                }
-              >
-                <span data-value>{"infinite" in m ? "∞" : m.req.toLocaleString()}</span>
-                <span data-name>{m.name}</span>
-                {m.id === "muse-spark-1.2-contributor" && (
-                  <span data-regions>
-                    (
-                    <a href="https://ai.developer.meta.com/legal/geographic-use-policy">
-                      {i18n.t("go.graph.limitedRegions")}
-                    </a>
-                    )
-                  </span>
-                )}
-                {"infinite" in m && <span data-limited>({i18n.t("go.graph.limitedTime")})</span>}
-                {"bonus" in m && <span data-bonus>{m.bonus}</span>}
-              </span>
-            )}
-          </For>
-        </div>
-      </div>
-
-      <figcaption>
-        <div data-slot="caption-row">
-          <div data-slot="caption-left">
-            <div data-slot="caption-meta">
-              <span data-slot="caption-label">{i18n.t("go.graph.label")}</span>
-              <a data-slot="caption-link" href={props.href}>
-                {i18n.t("go.graph.usageLimits")}
-              </a>
-            </div>
-          </div>
-        </div>
-      </figcaption>
-    </figure>
-  )
-}
-
 export default function Home() {
   const workspaceID = createAsync(() => checkLoggedIn())
-  const subscribeUrl = createMemo(() => (workspaceID() ? `/workspace/${workspaceID()}/go` : "/auth"))
+  const subscribeUrl = "https://opencode.ai/console/go"
   const i18n = useI18n()
   const language = useLanguage()
   return (
     <main data-page="go">
       {/*<HttpHeader name="Cache-Control" value="public, max-age=1, s-maxage=3600, stale-while-revalidate=86400" />*/}
       <Title>{i18n.t("go.title")}</Title>
-      <Meta name="description" content={i18n.t("go.meta.description")} />
+      <Meta name="description" content={`${i18n.t("go.meta.description")} ${i18n.t("go.plans.plus.description")}`} />
       <LocaleLinks path="/go" />
       <Meta property="og:type" content="website" />
       <Meta property="og:url" content={`${config.baseUrl}${language.route("/go")}`} />
       <Meta property="og:title" content={i18n.t("go.title")} />
-      <Meta property="og:description" content={i18n.t("go.meta.description")} />
+      <Meta
+        property="og:description"
+        content={`${i18n.t("go.meta.description")} ${i18n.t("go.plans.plus.description")}`}
+      />
       <Meta property="og:image" content="/social-share-black.png" />
       <Meta name="twitter:card" content="summary_large_image" />
       <Meta name="twitter:title" content={i18n.t("go.title")} />
-      <Meta name="twitter:description" content={i18n.t("go.meta.description")} />
+      <Meta
+        name="twitter:description"
+        content={`${i18n.t("go.meta.description")} ${i18n.t("go.plans.plus.description")}`}
+      />
       <Meta name="twitter:image" content="/social-share-black.png" />
       <Meta name="opencode:auth" content={workspaceID() ? "true" : "false"} />
 
@@ -276,7 +92,7 @@ export default function Home() {
             <div data-component="desktop-app-banner">
               <span data-slot="badge">{i18n.t("home.banner.badge")}</span>
               <div data-slot="content">
-                <span data-slot="text">{i18n.t("go.banner.text")}</span>
+                <span data-slot="text">{i18n.t("go.promo.spaceBunny")}</span>
               </div>
             </div>
             <div data-slot="hero-copy">
@@ -368,46 +184,74 @@ export default function Home() {
                 </div>
                 */}
               </div>
-              <a href={subscribeUrl()}>
-                <span>
-                  <For
-                    each={i18n
-                      .t("go.cta.template")
-                      .split(/(\{\{text\}\}|\{\{price\}\})/g)
-                      .filter(Boolean)}
-                  >
-                    {(part) => {
-                      if (part === "{{text}}") return <span>{i18n.t("go.cta.text")}</span>
-                      if (part === "{{price}}") {
-                        return <span data-slot="cta-price">{i18n.t("go.cta.price")}</span>
-                      }
-                      return part
-                    }}
-                  </For>
-                </span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M6.5 12L17 12M13 16.5L17.5 12L13 7.5"
-                    stroke="currentColor"
-                    stroke-width="1.5"
-                    stroke-linecap="square"
-                  />
-                </svg>
-              </a>
             </div>
-            <div data-slot="pricing-copy">
-              <p>{i18n.t("go.pricing.body")}</p>
+            <div data-slot="plans">
+              <For
+                each={
+                  [
+                    {
+                      name: "Go",
+                      price: "$10",
+                      cta: "go.cta.text",
+                      features: ["go.plans.go.feature1", "go.plans.go.feature2", "go.plans.go.feature3"],
+                      icon: "✓",
+                    },
+                    {
+                      name: "Go Plus",
+                      price: "$40",
+                      cta: "go.plans.plus.cta",
+                      features: ["go.plans.plus.feature1", "go.plans.plus.feature2", "go.plans.plus.feature3"],
+                      icon: "+",
+                    },
+                  ] as const
+                }
+              >
+                {(plan) => (
+                  <div data-slot="plan">
+                    <div>
+                      <p data-slot="name">{plan.name}</p>
+                      <p data-slot="price">
+                        {plan.price} <span>{i18n.t("go.plans.month")}</span>
+                      </p>
+                      <ul>
+                        <For each={plan.features}>
+                          {(feature) => (
+                            <li>
+                              <span aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                                  <path
+                                    d={
+                                      plan.icon === "✓"
+                                        ? "M3.53613 8.17857L6.39328 11.75L12.4647 4.25"
+                                        : "M8 2.88867V13.1109M2.88867 8H13.1109"
+                                    }
+                                    stroke="currentColor"
+                                  />
+                                </svg>
+                              </span>
+                              {i18n.t(feature)}
+                            </li>
+                          )}
+                        </For>
+                      </ul>
+                    </div>
+                    <a href={subscribeUrl}>{i18n.t(plan.cta)}</a>
+                  </div>
+                )}
+              </For>
             </div>
           </section>
 
           <section data-component="comparison">
-            <LimitsGraph href={language.route("/docs/go/#usage-limits")} />
+            <GoPlanChart href={goUsageLimits(language.locale())} />
           </section>
 
           <section data-component="problem">
             <div data-slot="section-title">
               <h3>{i18n.t("go.problem.title")}</h3>
-              <p>{i18n.t("go.problem.body")}</p>
+              <p>
+                {i18n.t("go.problem.body")} {i18n.t("go.plans.plus.description")}
+              </p>
             </div>
             <p>{i18n.t("go.problem.subtitle")}</p>
             <ul>
@@ -429,7 +273,9 @@ export default function Home() {
           <section data-component="how">
             <div data-slot="section-title">
               <h3>{i18n.t("go.how.title")}</h3>
-              <p>{i18n.t("go.how.body")}</p>
+              <p>
+                {i18n.t("go.how.body")} {i18n.t("go.plans.plus.description")}
+              </p>
             </div>
             <ul>
               <li>
@@ -446,7 +292,7 @@ export default function Home() {
                 <div>
                   <strong>{i18n.t("go.how.step2.title")}</strong> -{" "}
                   <a href={language.route("/docs/go/#pricing")}>{i18n.t("go.how.step2.link")}</a>{" "}
-                  {i18n.t("go.how.step2.afterLink")}
+                  {i18n.t("go.how.step2.afterLink")} · {i18n.t("go.plans.plus.description")}
                 </div>
               </li>
               <li>
@@ -478,14 +324,17 @@ export default function Home() {
                 <Faq question={i18n.t("go.faq.q9")}>{i18n.t("go.faq.a9")}</Faq>
               </li>
               <li>
-                <Faq question={i18n.t("go.faq.q3")}>{i18n.t("go.faq.a3")}</Faq>
+                <Faq question={i18n.t("go.faq.q3")}>
+                  {i18n.t("go.faq.a3")} {i18n.t("go.plans.plus.description")}
+                </Faq>
               </li>
               <li>
                 <Faq question={i18n.t("go.faq.q4")}>
                   {i18n.t("go.faq.a4.p1.beforePricing")}{" "}
                   <a href={language.route("/docs/go/#pricing")}>{i18n.t("go.faq.a4.p1.pricingLink")}</a>{" "}
-                  {i18n.t("go.faq.a4.p1.afterPricing")} {i18n.t("go.faq.a4.p2.beforeAccount")}{" "}
-                  <a href={subscribeUrl()}>{i18n.t("go.faq.a4.p2.accountLink")}</a>. {i18n.t("go.faq.a4.p3")}
+                  {i18n.t("go.faq.a4.p1.afterPricing")} {i18n.t("go.plans.plus.description")}{" "}
+                  {i18n.t("go.faq.a4.p2.beforeAccount")} <a href={subscribeUrl}>{i18n.t("go.faq.a4.p2.accountLink")}</a>
+                  . {i18n.t("go.faq.a4.p3")}
                 </Faq>
               </li>
               <li>
@@ -514,15 +363,22 @@ export default function Home() {
                   </div>
                   <div data-slot="faq-retention-notes">
                     <p>
-                      <strong>Grok 4.6:</strong> {i18n.t("go.faq.a5.grokRetention")}{" "}
+                      <strong>Grok 4.7/4.6:</strong> {i18n.t("go.faq.a5.grokRetention")}{" "}
                       <a href="https://docs.x.ai/developers/faq/security#what-is-zero-data-retention-zdr">
                         {i18n.t("go.faq.a5.learnMore")}
                       </a>
                       .
                     </p>
                     <p>
-                      <strong>GPT 5.6 Luna:</strong> {i18n.t("go.faq.a5.gptRetention")}{" "}
+                      <strong>GPT 6 Luna / GPT 5.6 Luna:</strong> {i18n.t("go.faq.a5.gptRetention")}{" "}
                       <a href="https://developers.openai.com/api/docs/guides/your-data#data-retention-controls-for-abuse-monitoring">
+                        {i18n.t("go.faq.a5.learnMore")}
+                      </a>
+                      .
+                    </p>
+                    <p>
+                      <strong>Muse Spark 1.3 Contributor:</strong> {i18n.t("go.faq.a5.museRetention")}{" "}
+                      <a href="https://dev.meta.ai/docs/pricing-rate-limits#contributor-tier">
                         {i18n.t("go.faq.a5.learnMore")}
                       </a>
                       .
@@ -548,6 +404,15 @@ export default function Home() {
               </li>
               <li>
                 <Faq question={i18n.t("go.faq.q8")}>{i18n.t("go.faq.a8")}</Faq>
+              </li>
+              <li>
+                <Faq question={i18n.t("go.faq.q10")}>
+                  <For each={i18n.t("go.faq.a10").split(/(\{\{contact\}\})/g)}>
+                    {(part) =>
+                      part === "{{contact}}" ? <a href="mailto:help@anoma.ly">{i18n.t("common.contactUs")}</a> : part
+                    }
+                  </For>
+                </Faq>
               </li>
             </ul>
           </section>
